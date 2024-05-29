@@ -14,6 +14,7 @@
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@tamagui/config": "^1.99.1",
     "@tamagui/lucide-icons": "^1.99.1",
+    "lottie-react-native": "^6.7.2",
     "react": "18.2.0",
     "react-native": "0.74.1",
     "react-native-svg": "^15.3.0",
