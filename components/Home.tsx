@@ -27,6 +27,7 @@ export default function Home({
         pressStyle={{
           backgroundColor: isConnected ? '$blue8Light' : '$orange8Light',
         }}
+        marginTop="$-10" // Not ideal
       >
         {isCheckingIn && (
           <Spinner
