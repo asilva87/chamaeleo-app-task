@@ -1,15 +1,6 @@
 import { Wifi, WifiOff } from '@tamagui/lucide-icons'
 import React from 'react'
-import {
-  Label,
-  Separator,
-  SizableText,
-  Stack,
-  Tabs,
-  XStack,
-  createSwitch,
-  styled,
-} from 'tamagui'
+import { Stack, Tabs, Text, XStack, createSwitch, styled } from 'tamagui'
 
 export enum Tab {
   // Lowercase, because the "Tabs" component's "onValueChange" function
@@ -33,7 +24,7 @@ const Frame = styled(Stack, {
   variants: {
     checked: {
       true: {
-        backgroundColor: 'lightblue',
+        backgroundColor: 'lightgrey',
       },
       false: {
         backgroundColor: 'silver',
@@ -48,7 +39,7 @@ const Frame = styled(Stack, {
 const Thumb = styled(Stack, {
   width: 20,
   height: 20,
-  backgroundColor: 'black',
+  backgroundColor: '$blue10Light',
   borderRadius: 20,
 
   variants: {
@@ -81,54 +72,48 @@ export default function Navbar({
         value={currentTab}
         orientation="horizontal"
         flexDirection="column"
-        // width={400}
-        // height={150}
-        borderRadius="$4"
-        borderWidth="$0.25"
-        overflow="hidden"
         borderColor="$borderColor"
         onValueChange={(value) => onTabChange(value as Tab)}
       >
-        <Tabs.List
-          disablePassBorderRadius="bottom"
-          aria-label="Manage your account"
-        >
+        <Tabs.List>
           <Tabs.Tab flex={1} value="home">
-            <SizableText fontFamily="$body">Check-in</SizableText>
+            <Text fontSize="$5" color="$black075">
+              Check-in
+            </Text>
           </Tabs.Tab>
 
           <Tabs.Tab flex={1} value="history">
-            <SizableText fontFamily="$body">History</SizableText>
+            <Text fontSize="$5" color="$black075">
+              History
+            </Text>
           </Tabs.Tab>
         </Tabs.List>
-
-        {/* <Separator /> */}
-
-        {/* <TabsContent value="tab1">
-        <H5>Profile</H5>
-      </TabsContent>
-
-      <TabsContent value="tab2">
-        <H5>Connections</H5>
-      </TabsContent> */}
       </Tabs>
 
       <XStack
         width="100vw"
         padding="$3"
         alignItems="center"
-        justifyContent="flex-end"
+        justifyContent={isConnected ? 'flex-end' : 'space-between'}
         gap="$2"
       >
-        {isConnected ? <Wifi size="$1" /> : <WifiOff size="$1" />}
+        {!isConnected && <Text color="$orange9Light">Waiting for network</Text>}
 
-        <Switch
-          size={'$2'}
-          defaultChecked={isConnected}
-          onCheckedChange={() => onConnectivityChange()}
-        >
-          <Switch.Thumb animation="quick" />
-        </Switch>
+        <XStack gap="$2">
+          {isConnected ? (
+            <Wifi size="$1" color="$black075" />
+          ) : (
+            <WifiOff size="$1" color="$black075" />
+          )}
+
+          <Switch
+            size={'$2'}
+            defaultChecked={isConnected}
+            onCheckedChange={() => onConnectivityChange()}
+          >
+            <Switch.Thumb animation="quick" />
+          </Switch>
+        </XStack>
       </XStack>
     </>
   )
