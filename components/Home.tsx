@@ -36,7 +36,7 @@ export default function Home({
           />
         )}
 
-        <Text fontSize="$5" color={!isCheckingIn ? 'white' : 'black'}>
+        <Text fontSize="$5" color={!isCheckingIn ? 'white' : '$black075'}>
           {!isCheckingIn ? 'Check in' : 'Checking in'}
         </Text>
       </Button>

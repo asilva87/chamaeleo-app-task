@@ -20,9 +20,9 @@ export default function CheckinLogItem({
       >
         <XStack justifyContent="space-between" alignItems="center">
           <YStack>
-            <Text>{date}</Text>
-            <Text>{time}</Text>
-            <Text fontStyle="italic">
+            <Text color="$black075">{date}</Text>
+            <Text color="$black075">{time}</Text>
+            <Text color="$black075" fontStyle="italic">
               {!pending
                 ? `Sent ${
                     sentAfterReconnection ? 'after network reestablished' : ''
