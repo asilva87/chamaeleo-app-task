@@ -6,8 +6,8 @@ import LottieView from 'lottie-react-native'
 
 import config from './tamagui.config'
 import Navbar, { Tab } from './components/Navbar'
-import Home from './components/Home'
-import History from './components/History'
+import Home from './pages/Home'
+import History from './pages/History'
 
 export interface CheckinLog {
   date: string
@@ -162,7 +162,7 @@ function App(): React.JSX.Element {
         <Modal visible={showSuccessAnimation} transparent animationType="fade">
           <View style={styles.animationContainer}>
             <LottieView
-              source={require('./assets/success.json')}
+              source={require('./assets/animations/success.json')}
               autoPlay
               loop={false}
               style={styles.animation}
@@ -174,7 +174,7 @@ function App(): React.JSX.Element {
         <Modal visible={showOfflineAnimation} transparent animationType="fade">
           <View style={styles.animationContainer}>
             <LottieView
-              source={require('./assets/warning.json')}
+              source={require('./assets/animations/warning.json')}
               autoPlay
               loop={false}
               style={styles.animation}
@@ -189,7 +189,7 @@ function App(): React.JSX.Element {
         >
           <View style={styles.animationContainer}>
             <LottieView
-              source={require('./assets/party.json')}
+              source={require('./assets/animations/party.json')}
               autoPlay
               loop={false}
               style={{ height: 500, width: 500 }}

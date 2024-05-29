@@ -2,7 +2,7 @@ import React from 'react'
 import { FlatList } from 'react-native'
 import { YStack } from 'tamagui'
 import { CheckinLog } from '../App'
-import CheckinLogItem from './CheckinLogItem'
+import CheckinLogItem from '../components/CheckinLogItem'
 
 interface HistoryProps {
   checkinHistory: Array<CheckinLog>
