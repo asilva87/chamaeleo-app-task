@@ -77,13 +77,21 @@ export default function Navbar({
       >
         <Tabs.List>
           <Tabs.Tab flex={1} value="home">
-            <Text fontSize="$5" color="$black075">
+            <Text
+              fontSize="$5"
+              color="$black075"
+              fontWeight={currentTab === Tab.HOME ? 'bold' : 'normal'}
+            >
               Check-in
             </Text>
           </Tabs.Tab>
 
           <Tabs.Tab flex={1} value="history">
-            <Text fontSize="$5" color="$black075">
+            <Text
+              fontSize="$5"
+              color="$black075"
+              fontWeight={currentTab === Tab.HISTORY ? 'bold' : 'normal'}
+            >
               History
             </Text>
           </Tabs.Tab>
