@@ -103,7 +103,7 @@ function App(): React.JSX.Element {
         setTimeout(() => setShowOfflineAnimation(false), 3000)
       }
 
-      const updatedHistory = [...checkinHistory, newCheckInData]
+      const updatedHistory = [newCheckInData, ...checkinHistory]
       setCheckinHistory(updatedHistory)
       await AsyncStorage.setItem(
         'checkinHistory',
