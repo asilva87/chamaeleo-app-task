@@ -1,3 +1,4 @@
+import { Wifi, WifiOff } from '@tamagui/lucide-icons'
 import React from 'react'
 import {
   Label,
@@ -114,20 +115,12 @@ export default function Navbar({
 
       <XStack
         width="100vw"
-        paddingRight="$3"
+        padding="$3"
         alignItems="center"
         justifyContent="flex-end"
         gap="$2"
       >
-        <Label
-          paddingRight="$0"
-          // minWidth={90}
-          justifyContent="flex-end"
-          // size={props.size}
-          // htmlFor={id}
-        >
-          Connected?
-        </Label>
+        {isConnected ? <Wifi size="$1" /> : <WifiOff size="$1" />}
 
         <Switch
           size={'$2'}
