@@ -1,79 +1,34 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## Chamaeleo App Task / GetPlanned GmbH
 
-# Getting Started
+This is an app I built for the selection process at GetPlanned GmbH.
 
-> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+### How to run?
 
-## Step 1: Start the Metro Server
+- Open Android Studio.
+- `bun install` or any other package manager.
+- Run the AVD.
+- On the terminal, run `npm start`.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### About the app
 
-To start Metro, run the following command from the _root_ of your React Native project:
+It is a mock app where the one user clicks on a button to "check in", that means, to inform the system they're starting their shift.
 
-```bash
-# using npm
-npm start
+If there's connection, the app will mock an API request and show an animation indicating success. Otherwise, it will store the check in data locally to send it later when internet connection is reestablished.
 
-# OR using Yarn
-yarn start
-```
+There's a **History** page to check all the check ins done through the app. These are stored locally. The page indicates:
 
-## Step 2: Start your Application
+- If that check in was successful
+- If it is still pending
+- If it was sending after internet connection was reestablished
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+A slider switch mocks the network availability by manually turning it on or off.
 
-### For Android
+### Things to note
 
-```bash
-# using npm
-npm run android
+- Several check ins can be done without internet connection. Upon reconnection, they will all be "sent" to the "API".
+- When the connection is back, the **success** animation is displayed to show the user that check in logs have been sent.
+- By default, the app gets initialised with the "internet connection" turned on. So any pending logs in the local storage will be "sent" to the "API" and the user will see the **success** animation.
+- Certain elements have different colors depending on the state of the network, so that the user is constantly aware of its status.
+- Upon doing a check in without internet, a different animation will be shown to bring attention to that.
 
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+#### Tested on Android
