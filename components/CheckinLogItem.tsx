@@ -1,5 +1,6 @@
-import { Separator, Text, YStack } from 'tamagui'
+import { Separator, Text, XStack, YStack } from 'tamagui'
 import { CheckinLog } from '../App'
+import { AlertTriangle, CheckCircle2 } from '@tamagui/lucide-icons'
 
 export default function CheckinLogItem({
   checkinLog,
@@ -17,15 +18,25 @@ export default function CheckinLogItem({
         paddingBottom="$2"
         backgroundColor={!pending ? '$green3Light' : '$orange3Light'}
       >
-        <Text>{date}</Text>
-        <Text>{time}</Text>
-        <Text fontStyle="italic">
-          {!pending
-            ? `Sent ${
-                sentAfterReconnection ? 'after network reestablished' : ''
-              }`
-            : 'Waiting for network'}
-        </Text>
+        <XStack justifyContent="space-between" alignItems="center">
+          <YStack>
+            <Text>{date}</Text>
+            <Text>{time}</Text>
+            <Text fontStyle="italic">
+              {!pending
+                ? `Sent ${
+                    sentAfterReconnection ? 'after network reestablished' : ''
+                  }`
+                : 'Waiting for network'}
+            </Text>
+          </YStack>
+
+          {!pending ? (
+            <CheckCircle2 size="$2" color="$green8Dark" />
+          ) : (
+            <AlertTriangle size="$2" color="$orange8Dark" />
+          )}
+        </XStack>
       </YStack>
       <Separator />
     </YStack>
