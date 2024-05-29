@@ -1,4 +1,4 @@
-import { YStack } from 'tamagui'
+import { ScrollView, YStack } from 'tamagui'
 import { CheckinLog } from '../App'
 
 import CheckinLogItem from './CheckinLogItem'
@@ -9,10 +9,12 @@ interface HistoryProps {
 
 export default function History({ checkinHistory }: HistoryProps): JSX.Element {
   return (
-    <YStack>
-      {checkinHistory.map((log: CheckinLog, index: number) => (
-        <CheckinLogItem key={index} checkinLog={log} />
-      ))}
-    </YStack>
+    <ScrollView>
+      <YStack>
+        {checkinHistory.map((log: CheckinLog, index: number) => (
+          <CheckinLogItem key={index} checkinLog={log} />
+        ))}
+      </YStack>
+    </ScrollView>
   )
 }
