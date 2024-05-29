@@ -118,24 +118,3 @@ export default function Navbar({
     </>
   )
 }
-
-// const TabsContent = (props: TabsContentProps) => {
-//   return (
-//     <Tabs.Content
-//       backgroundColor="$background"
-//       key="tab3"
-//       padding="$2"
-//       alignItems="center"
-//       justifyContent="center"
-//       flex={1}
-//       borderColor="$background"
-//       borderRadius="$2"
-//       borderTopLeftRadius={0}
-//       borderTopRightRadius={0}
-//       borderWidth="$2"
-//       {...props}
-//     >
-//       {props.children}
-//     </Tabs.Content>
-//   )
-// }
