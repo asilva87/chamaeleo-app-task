@@ -1,63 +1,132 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, SafeAreaView, StyleSheet, useColorScheme } from 'react-native'
-
-import { Colors } from 'react-native/Libraries/NewAppScreen'
-import { Button, TamaguiProvider, Text, View, YStack } from 'tamagui'
+import { SafeAreaView, StyleSheet, Modal, View } from 'react-native'
+import { TamaguiProvider } from 'tamagui'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import LottieView from 'lottie-react-native'
 
 import config from './tamagui.config'
 import Navbar, { Tab } from './components/Navbar'
+import Home from './components/Home'
+import History from './components/History'
+
+export interface CheckinLog {
+  date: string
+  time: string
+  employeeName: string
+  pending: boolean
+  sentAfterReconnection: boolean
+}
 
 function App(): React.JSX.Element {
   const [isCheckingIn, setIsCheckingIn] = useState(false)
   const [isConnected, setIsConnected] = useState(true)
   const [currentTab, setCurrentTab] = useState<Tab>(Tab.HOME)
+  const [checkinHistory, setCheckinHistory] = useState<CheckinLog[]>([])
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
+  const [showOfflineAnimation, setShowOfflineAnimation] = useState(false)
 
+  // Load checkins history from local storage
   useEffect(() => {
-    setCurrentTab(Tab.HOME)
+    const loadCheckinHistory = async () => {
+      try {
+        const storedHistory = await AsyncStorage.getItem('checkinHistory')
+        if (storedHistory) {
+          setCheckinHistory(JSON.parse(storedHistory))
+        }
+      } catch (error) {
+        console.error('Error loading check-in history:', error)
+      }
+    }
+
+    loadCheckinHistory()
   }, [])
+
+  // Send pending checkins to the API upon reconnection
+  useEffect(() => {
+    const updatePendingLogs = async () => {
+      if (isConnected) {
+        const updatedHistory = checkinHistory.map((log) => {
+          if (log.pending) {
+            log.pending = false
+            log.sentAfterReconnection = true
+          }
+
+          return log
+        })
+
+        // Update history in app and localstorage to reflect that
+        setCheckinHistory(updatedHistory)
+        await AsyncStorage.setItem(
+          'checkinHistory',
+          JSON.stringify(updatedHistory)
+        )
+      }
+    }
+
+    updatePendingLogs()
+  }, [isConnected])
 
   const handleCheckIn = async () => {
     setIsCheckingIn(true)
-    const checkInData = {
-      datetime: new Date().toISOString(),
-      // Optionally add GPS location here
+
+    const currentDate = new Date()
+    const formattedDate = `${currentDate
+      .getDate()
+      .toString()
+      .padStart(2, '0')}.${(currentDate.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}.${currentDate.getFullYear()}`
+    const formattedTime = `${currentDate
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${currentDate
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`
+
+    const newCheckInData: CheckinLog = {
+      date: formattedDate,
+      time: formattedTime,
+      employeeName: 'Alice',
+      pending: !isConnected,
+      sentAfterReconnection: false,
     }
 
     try {
       if (isConnected) {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000))
-        // Success animation
-        console.log('Check-in successful!')
+        setShowSuccessAnimation(true)
+        setTimeout(() => setShowSuccessAnimation(false), 3000)
       } else {
-        // Save data locally and show "waiting for network" notice
-        // await AsyncStorage.setItem('checkInData', JSON.stringify(checkInData));
-        console.log('No internet. Data saved locally.')
+        setShowOfflineAnimation(true)
+        setTimeout(() => setShowOfflineAnimation(false), 3000)
       }
+
+      const updatedHistory = [...checkinHistory, newCheckInData]
+      setCheckinHistory(updatedHistory)
+      await AsyncStorage.setItem(
+        'checkinHistory',
+        JSON.stringify(updatedHistory)
+      )
     } catch (error) {
-      console.error(error)
+      console.error('Error during check-in:', error)
     } finally {
       setIsCheckingIn(false)
     }
   }
 
-  const isDarkMode = useColorScheme() === 'dark'
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const handleToggleConnectivity = () => {
+    setIsConnected((prev) => !prev)
   }
 
-  const handleToggleConnectivity = (): void => {
-    setIsConnected(!isConnected)
-  }
-
-  const handleTabChange = (tab: Tab): void => {
+  const handleTabChange = (tab: Tab) => {
     setCurrentTab(tab)
   }
 
   return (
     <TamaguiProvider config={config}>
-      <View style={styles.sectionContainer}>
+      <SafeAreaView style={styles.container}>
         <Navbar
           isConnected={isConnected}
           onConnectivityChange={handleToggleConnectivity}
@@ -66,41 +135,56 @@ function App(): React.JSX.Element {
         />
 
         {currentTab === Tab.HOME && (
-          <YStack width="100vw" alignItems="center">
-            <Button
-              // color={!isCheckingIn ? '$blue4Dark' : '$black0'}
-              backgroundColor={!isCheckingIn ? '$blue9Light' : '$gray5Light'}
-              onPress={handleCheckIn}
-              disabled={isCheckingIn}
-            >
-              {!isCheckingIn ? (
-                <Text fontSize={'$5'}>Check in</Text>
-              ) : (
-                <Text>Checking in...</Text>
-              )}
-            </Button>
-          </YStack>
+          <Home
+            isCheckingIn={isCheckingIn}
+            isConnected={isConnected}
+            onCheckIn={handleCheckIn}
+          />
         )}
 
-        {currentTab === Tab.HISTORY && <Text>history</Text>}
-      </View>
+        {currentTab === Tab.HISTORY && (
+          <History checkinHistory={checkinHistory} />
+        )}
+
+        <Modal visible={showSuccessAnimation} transparent animationType="fade">
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require('./assets/success.json')}
+              autoPlay
+              loop={false}
+              style={styles.animation}
+            />
+          </View>
+        </Modal>
+
+        <Modal visible={showOfflineAnimation} transparent animationType="fade">
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require('./assets/warning.json')}
+              autoPlay
+              loop={false}
+              style={styles.animation}
+            />
+          </View>
+        </Modal>
+      </SafeAreaView>
     </TamaguiProvider>
   )
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {},
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  container: {
+    flex: 1,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  animationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  highlight: {
-    fontWeight: '700',
+  animation: {
+    height: 400,
+    width: 400,
   },
 })
 
