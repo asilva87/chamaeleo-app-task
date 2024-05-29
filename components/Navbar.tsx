@@ -1,14 +1,6 @@
 import { Wifi, WifiOff } from '@tamagui/lucide-icons'
 import React from 'react'
-import {
-  Button,
-  Stack,
-  Tabs,
-  Text,
-  XStack,
-  createSwitch,
-  styled,
-} from 'tamagui'
+import { Button, Stack, Text, XStack, createSwitch, styled } from 'tamagui'
 
 export enum Tab {
   // Lowercase, because the "Tabs" component's "onValueChange" function
