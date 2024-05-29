@@ -28,6 +28,11 @@ export default function Home({
           backgroundColor: isConnected ? '$blue8Light' : '$orange8Light',
         }}
         marginTop="$-10" // Not ideal
+        shadowColor="$black"
+        shadowOffset={{ width: 0, height: 2 }}
+        shadowOpacity={0.25}
+        shadowRadius={3.84}
+        elevation={5}
       >
         {isCheckingIn && (
           <Spinner

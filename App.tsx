@@ -24,6 +24,7 @@ function App(): React.JSX.Element {
   const [checkinHistory, setCheckinHistory] = useState<CheckinLog[]>([])
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [showOfflineAnimation, setShowOfflineAnimation] = useState(false)
+  const [showPendingSentAnimation, setPendingSentAnimation] = useState(false)
 
   // Load checkins history from local storage
   useEffect(() => {
@@ -45,14 +46,20 @@ function App(): React.JSX.Element {
   useEffect(() => {
     const updatePendingLogs = async () => {
       if (isConnected) {
+        let hadPending = false
         const updatedHistory = checkinHistory.map((log) => {
           if (log.pending) {
             log.pending = false
             log.sentAfterReconnection = true
+            hadPending = true
           }
-
           return log
         })
+
+        if (hadPending) {
+          setPendingSentAnimation(true)
+          setTimeout(() => setPendingSentAnimation(false), 1500)
+        }
 
         // Update history in app and localstorage to reflect that
         setCheckinHistory(updatedHistory)
@@ -96,9 +103,13 @@ function App(): React.JSX.Element {
       if (isConnected) {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        // Animations
         setShowSuccessAnimation(true)
         setTimeout(() => setShowSuccessAnimation(false), 1500)
       } else {
+        // A short delay so that the user understands that something was done
+        await new Promise((resolve) => setTimeout(resolve, 500))
         setShowOfflineAnimation(true)
         setTimeout(() => setShowOfflineAnimation(false), 3000)
       }
@@ -146,6 +157,8 @@ function App(): React.JSX.Element {
           <History checkinHistory={checkinHistory} />
         )}
 
+        {/* With more modals with animations a "modal builder" function
+        should be created to avoid repetition. */}
         <Modal visible={showSuccessAnimation} transparent animationType="fade">
           <View style={styles.animationContainer}>
             <LottieView
@@ -168,6 +181,22 @@ function App(): React.JSX.Element {
             />
           </View>
         </Modal>
+
+        <Modal
+          visible={showPendingSentAnimation}
+          transparent
+          animationType="fade"
+        >
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require('./assets/party.json')}
+              autoPlay
+              loop={false}
+              style={{ height: 500, width: 500 }}
+              speed={2}
+            />
+          </View>
+        </Modal>
       </SafeAreaView>
     </TamaguiProvider>
   )
@@ -181,7 +210,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   animation: {
     height: 300,

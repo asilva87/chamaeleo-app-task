@@ -1,6 +1,14 @@
 import { Wifi, WifiOff } from '@tamagui/lucide-icons'
 import React from 'react'
-import { Stack, Tabs, Text, XStack, createSwitch, styled } from 'tamagui'
+import {
+  Button,
+  Stack,
+  Tabs,
+  Text,
+  XStack,
+  createSwitch,
+  styled,
+} from 'tamagui'
 
 export enum Tab {
   // Lowercase, because the "Tabs" component's "onValueChange" function
@@ -17,14 +25,20 @@ interface NavbarProps {
   onTabChange: (tab: Tab) => void
 }
 
+interface NavbarButtonProps
+  extends Omit<NavbarProps, 'onConnectivityChange' | 'isConnected'> {
+  tab: Tab
+}
+
 const Frame = styled(Stack, {
   width: 40,
-  height: 20,
+  height: 24,
+  padding: 2,
   borderRadius: 20,
   variants: {
     checked: {
       true: {
-        backgroundColor: 'lightgrey',
+        backgroundColor: '#ddd',
       },
       false: {
         backgroundColor: 'silver',
@@ -39,16 +53,15 @@ const Frame = styled(Stack, {
 const Thumb = styled(Stack, {
   width: 20,
   height: 20,
-  backgroundColor: '$blue10Light',
   borderRadius: 20,
 
   variants: {
     checked: {
       true: {
-        opacity: 0.8,
+        backgroundColor: '$blue9Light',
       },
       false: {
-        opacity: 0.5,
+        backgroundColor: '$orange9Light',
       },
     },
   } as const,
@@ -59,6 +72,24 @@ export const Switch = createSwitch({
   Thumb,
 })
 
+function NavbarButton({
+  tab,
+  currentTab,
+  onTabChange,
+}: NavbarButtonProps): JSX.Element {
+  return (
+    <Button
+      borderRadius="$0"
+      onPress={() => onTabChange(tab)}
+      backgroundColor={currentTab === tab ? '$blue9Light' : '#ddd'}
+      color={currentTab === tab ? 'white' : '$black075'}
+      fontWeight={currentTab === tab ? 'bold' : 'normal'}
+    >
+      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+    </Button>
+  )
+}
+
 export default function Navbar({
   isConnected,
   currentTab,
@@ -66,38 +97,32 @@ export default function Navbar({
   onTabChange,
 }: NavbarProps) {
   return (
-    <>
-      <Tabs
-        defaultValue={Tab.HOME}
-        value={currentTab}
-        orientation="horizontal"
-        flexDirection="column"
-        borderColor="$borderColor"
-        onValueChange={(value) => onTabChange(value as Tab)}
-      >
-        <Tabs.List>
-          <Tabs.Tab flex={1} value="home">
-            <Text
-              fontSize="$5"
-              color="$black075"
-              fontWeight={currentTab === Tab.HOME ? 'bold' : 'normal'}
-            >
-              Check-in
-            </Text>
-          </Tabs.Tab>
+    <XStack
+      justifyContent="space-between"
+      alignItems="center"
+      style={{
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        elevation: 10,
+        backgroundColor: 'white',
+      }}
+      height="$4"
+    >
+      {/* Navigation buttons */}
+      <XStack>
+        <NavbarButton
+          tab={Tab.HOME}
+          currentTab={currentTab}
+          onTabChange={onTabChange}
+        />
+        <NavbarButton
+          tab={Tab.HISTORY}
+          currentTab={currentTab}
+          onTabChange={onTabChange}
+        />
+      </XStack>
 
-          <Tabs.Tab flex={1} value="history">
-            <Text
-              fontSize="$5"
-              color="$black075"
-              fontWeight={currentTab === Tab.HISTORY ? 'bold' : 'normal'}
-            >
-              History
-            </Text>
-          </Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
-
+      {/* Network toggler */}
       <XStack
         width="100vw"
         padding="$3"
@@ -105,7 +130,11 @@ export default function Navbar({
         justifyContent={isConnected ? 'flex-end' : 'space-between'}
         gap="$2"
       >
-        {!isConnected && <Text color="$orange9Light">Waiting for network</Text>}
+        {!isConnected && (
+          <Text color="$orange9Light" fontStyle="italic">
+            Waiting for network
+          </Text>
+        )}
 
         <XStack gap="$2">
           {isConnected ? (
@@ -117,12 +146,16 @@ export default function Navbar({
           <Switch
             size={'$2'}
             defaultChecked={isConnected}
-            onCheckedChange={() => onConnectivityChange()}
+            onCheckedChange={() => {
+              setTimeout(() => {
+                onConnectivityChange()
+              }, 0)
+            }}
           >
             <Switch.Thumb animation="quick" />
           </Switch>
         </XStack>
       </XStack>
-    </>
+    </XStack>
   )
 }
