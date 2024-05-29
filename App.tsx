@@ -97,7 +97,7 @@ function App(): React.JSX.Element {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000))
         setShowSuccessAnimation(true)
-        setTimeout(() => setShowSuccessAnimation(false), 3000)
+        setTimeout(() => setShowSuccessAnimation(false), 1500)
       } else {
         setShowOfflineAnimation(true)
         setTimeout(() => setShowOfflineAnimation(false), 3000)
@@ -153,6 +153,7 @@ function App(): React.JSX.Element {
               autoPlay
               loop={false}
               style={styles.animation}
+              speed={2}
             />
           </View>
         </Modal>
