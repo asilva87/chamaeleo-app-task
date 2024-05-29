@@ -24,53 +24,47 @@ function App(): React.JSX.Element {
   const [checkinHistory, setCheckinHistory] = useState<CheckinLog[]>([])
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [showOfflineAnimation, setShowOfflineAnimation] = useState(false)
-  const [showPendingSentAnimation, setPendingSentAnimation] = useState(false)
 
-  // Load checkins history from local storage
+  // Load checkins history from local storage and send pending checkins to the API upon reconnection or app start
   useEffect(() => {
-    const loadCheckinHistory = async () => {
+    const initializeCheckinHistory = async () => {
       try {
         const storedHistory = await AsyncStorage.getItem('checkinHistory')
+        let history = []
         if (storedHistory) {
-          setCheckinHistory(JSON.parse(storedHistory))
+          history = JSON.parse(storedHistory)
+          setCheckinHistory(history)
+        }
+
+        if (isConnected) {
+          let hadPending = false
+          const updatedHistory = history.map((log: CheckinLog) => {
+            if (log.pending) {
+              log.pending = false
+              log.sentAfterReconnection = true
+              hadPending = true
+            }
+            return log
+          })
+
+          if (hadPending) {
+            setShowSuccessAnimation(true)
+            setTimeout(() => setShowSuccessAnimation(false), 1500)
+          }
+
+          // Update history in app and local storage to reflect that
+          setCheckinHistory(updatedHistory)
+          await AsyncStorage.setItem(
+            'checkinHistory',
+            JSON.stringify(updatedHistory)
+          )
         }
       } catch (error) {
-        console.error('Error loading check-in history:', error)
+        console.error('Error initializing check-in history:', error)
       }
     }
 
-    loadCheckinHistory()
-  }, [])
-
-  // Send pending checkins to the API upon reconnection
-  useEffect(() => {
-    const updatePendingLogs = async () => {
-      if (isConnected) {
-        let hadPending = false
-        const updatedHistory = checkinHistory.map((log) => {
-          if (log.pending) {
-            log.pending = false
-            log.sentAfterReconnection = true
-            hadPending = true
-          }
-          return log
-        })
-
-        if (hadPending) {
-          setPendingSentAnimation(true)
-          setTimeout(() => setPendingSentAnimation(false), 1500)
-        }
-
-        // Update history in app and localstorage to reflect that
-        setCheckinHistory(updatedHistory)
-        await AsyncStorage.setItem(
-          'checkinHistory',
-          JSON.stringify(updatedHistory)
-        )
-      }
-    }
-
-    updatePendingLogs()
+    initializeCheckinHistory()
   }, [isConnected])
 
   const handleCheckIn = async () => {
@@ -165,7 +159,7 @@ function App(): React.JSX.Element {
               source={require('./assets/animations/success.json')}
               autoPlay
               loop={false}
-              style={styles.animation}
+              style={styles.fullScreenAnimation}
               speed={2}
             />
           </View>
@@ -177,23 +171,7 @@ function App(): React.JSX.Element {
               source={require('./assets/animations/warning.json')}
               autoPlay
               loop={false}
-              style={styles.animation}
-            />
-          </View>
-        </Modal>
-
-        <Modal
-          visible={showPendingSentAnimation}
-          transparent
-          animationType="fade"
-        >
-          <View style={styles.animationContainer}>
-            <LottieView
-              source={require('./assets/animations/party.json')}
-              autoPlay
-              loop={false}
-              style={{ height: 500, width: 500 }}
-              speed={2}
+              style={styles.fullScreenAnimation}
             />
           </View>
         </Modal>
@@ -211,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  animation: {
+  fullScreenAnimation: {
     height: 300,
     width: 300,
   },
