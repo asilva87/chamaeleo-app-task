@@ -30,6 +30,7 @@ A slider switch mocks the network availability by manually turning it on or off.
 
 ### Things to note
 
+- No routing was used because it's a very simple app.
 - Several check ins can be done without internet connection. Upon reconnection, they will all be "sent" to the "API".
 - When the connection is back, the **success** animation is displayed to show the user that check in logs have been sent.
 - By default, the app gets initialised with the "internet connection" turned on. So any pending logs in the local storage will be "sent" to the "API" and the user will see the **success** animation.
