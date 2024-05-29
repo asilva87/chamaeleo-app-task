@@ -1,10 +1,11 @@
 import { config } from '@tamagui/config/v3'
-
-import { Text, View } from 'react-native'
-
 import { createTamagui } from 'tamagui' // or '@tamagui/core'
+
+// This was just copied from Tamagui's website
+
 const appConfig = createTamagui(config)
 export type AppConfig = typeof appConfig
+
 declare module 'tamagui' {
   // or '@tamagui/core'
 
@@ -14,4 +15,5 @@ declare module 'tamagui' {
 
   interface TamaguiCustomConfig extends AppConfig {}
 }
+
 export default appConfig
