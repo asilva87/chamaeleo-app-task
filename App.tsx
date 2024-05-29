@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   animation: {
-    height: 400,
-    width: 400,
+    height: 300,
+    width: 300,
   },
 })
 
