@@ -15,6 +15,7 @@ export interface CheckinLog {
   employeeName: string
   pending: boolean
   sentAfterReconnection: boolean
+  late: boolean
 }
 
 function App(): React.JSX.Element {
@@ -85,12 +86,24 @@ function App(): React.JSX.Element {
       .toString()
       .padStart(2, '0')}`
 
+    // Determine if the check-in is late
+    const scheduledTime = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate(),
+      9,
+      0
+    ) // Assuming 9:00 AM is the scheduled check-in time
+    const checkInTime = currentDate.getTime()
+    const isLate = checkInTime > scheduledTime.getTime()
+
     const newCheckInData: CheckinLog = {
       date: formattedDate,
       time: formattedTime,
       employeeName: 'Alice',
       pending: !isConnected,
       sentAfterReconnection: false,
+      late: isLate, // Add the late property
     }
 
     try {

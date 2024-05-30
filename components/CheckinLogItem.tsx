@@ -7,7 +7,7 @@ export default function CheckinLogItem({
 }: {
   checkinLog: CheckinLog
 }): JSX.Element {
-  const { date, time, pending, sentAfterReconnection } = checkinLog
+  const { date, time, pending, sentAfterReconnection, late } = checkinLog
 
   return (
     <YStack>
@@ -21,7 +21,12 @@ export default function CheckinLogItem({
         <XStack justifyContent="space-between" alignItems="center">
           <YStack>
             <Text color="$black075">{date}</Text>
-            <Text color="$black075">{time}</Text>
+            <Text color="$black075">
+              {time} -{' '}
+              <Text color={!late ? '$green9Light' : '$red9Light'}>
+                {!late ? 'On time' : 'Late'}
+              </Text>
+            </Text>
             <Text color="$black075" fontStyle="italic">
               {!pending
                 ? `Sent ${
