@@ -68,10 +68,30 @@ function App(): React.JSX.Element {
     initializeCheckinHistory()
   }, [isConnected])
 
+  const getNextRoundedTime = (currentDate: Date) => {
+    let date = new Date(currentDate.getTime())
+    let minutes = date.getMinutes()
+    let roundedMinutes =
+      Math.floor(minutes / 10) * 10 + (minutes % 10 < 5 ? 0 : 10)
+
+    if (roundedMinutes >= 60) {
+      date.setHours(date.getHours() + 1)
+      date.setMinutes(0)
+    } else {
+      date.setMinutes(roundedMinutes)
+    }
+
+    date.setSeconds(0)
+    date.setMilliseconds(0)
+    return date
+  }
+
   const handleCheckIn = async () => {
     setIsCheckingIn(true)
 
     const currentDate = new Date()
+    const roundedShiftStartTime = getNextRoundedTime(currentDate)
+
     const formattedDate = `${currentDate
       .getDate()
       .toString()
@@ -86,15 +106,7 @@ function App(): React.JSX.Element {
       .toString()
       .padStart(2, '0')}`
 
-    // Determine if the check-in is late
-    const scheduledTime = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      currentDate.getDate(),
-      18,
-      10
-    )
-    const isLate = currentDate > scheduledTime
+    const isLate = currentDate.getTime() > roundedShiftStartTime.getTime()
 
     const newCheckInData: CheckinLog = {
       date: formattedDate,
@@ -102,7 +114,7 @@ function App(): React.JSX.Element {
       employeeName: 'Alice',
       pending: !isConnected,
       sentAfterReconnection: false,
-      late: isLate, // Add the late property
+      late: isLate,
     }
 
     try {
