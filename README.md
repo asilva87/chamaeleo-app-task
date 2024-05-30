@@ -24,7 +24,7 @@ There's a **History** page to check all the check ins done through the app. Thes
 
 - If that check in was successful
 - If it is still pending
-- If it was sending after internet connection was reestablished
+- If it was sent after internet connection was reestablished
 
 A slider switch mocks the network availability by manually turning it on or off.
 
@@ -32,7 +32,7 @@ A slider switch mocks the network availability by manually turning it on or off.
 
 - No routing was used because it's a very simple app.
 - Several check ins can be done without internet connection. Upon reconnection, they will all be "sent" to the "API".
-- When the connection is back, the **success** animation is displayed to show the user that check in logs have been sent.
+- When the connection is back, the **success** animation is displayed to show the user that the pending check in logs have been sent.
 - By default, the app gets initialised with the "internet connection" turned on. So any pending logs in the local storage will be "sent" to the "API" and the user will see the **success** animation.
 - Certain elements have different colors depending on the state of the network, so that the user is constantly aware of its status.
 - Upon doing a check in without internet, a different animation will be shown to bring attention to that.
