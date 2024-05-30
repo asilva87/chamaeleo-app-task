@@ -91,11 +91,10 @@ function App(): React.JSX.Element {
       currentDate.getFullYear(),
       currentDate.getMonth(),
       currentDate.getDate(),
-      9,
-      0
-    ) // Assuming 9:00 AM is the scheduled check-in time
-    const checkInTime = currentDate.getTime()
-    const isLate = checkInTime > scheduledTime.getTime()
+      18,
+      10
+    )
+    const isLate = currentDate > scheduledTime
 
     const newCheckInData: CheckinLog = {
       date: formattedDate,
