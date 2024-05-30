@@ -4,7 +4,7 @@ This is an app I built for the selection process at GetPlanned GmbH.
 
 <p align="center">
   <img src="/assets/images/home-page.png" alt="Home page" width="300"/>
-  <!-- <img src="/assets/images/history-page.png" alt="History page" width="300"/> -->
+  <img src="/assets/images/history-page.png" alt="History page" width="300"/>
 </p>
 
 ### How to run?
